@@ -1,4 +1,4 @@
-package models
+package permission
 
 import "gorm.io/gorm"
 

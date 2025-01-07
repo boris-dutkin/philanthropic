@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	config.LoadEnv()
-	database.Connect()
+	config := config.New()
+	database.Connect(config)
 }
