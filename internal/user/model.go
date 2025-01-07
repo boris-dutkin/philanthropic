@@ -1,6 +1,9 @@
-package models
+package user
 
-import "gorm.io/gorm"
+import (
+	"github.com/boris-dutkin/philanthropic/internal/role"
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -9,5 +12,5 @@ type User struct {
 	Email     string `json:"email" gorm:"type:varchar(20); unique; unique_index;"`
 	Password  string `json:"-"`
 	RoleID    int
-	Role      Role `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Role      role.Role `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }

@@ -7,17 +7,42 @@ import (
 	"github.com/spf13/viper"
 )
 
-func LoadEnv() {
+type DB struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Name     string
+}
+
+type Server struct {
+	Port int
+}
+
+type Config struct {
+	DB     DB
+	Server Server
+}
+
+func New() *Config {
 	directory, _ := os.Getwd()
+	var config Config
 
 	viper.AutomaticEnv()
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(fmt.Sprintf("%s/config", directory))
-	viper.AddConfigPath(".")
+	env := viper.GetString("env")
 
-	err := viper.ReadInConfig()
-	if err != nil {
+	viper.AddConfigPath(".")
+	viper.SetConfigName(env)
+	viper.AddConfigPath(fmt.Sprintf("%s/config", directory))
+	viper.SetConfigType("yaml")
+
+	if err := viper.ReadInConfig(); err != nil {
 		panic("Failed to read the config file.")
 	}
+
+	if err := viper.Unmarshal(&config); err != nil {
+		panic("Failed to parse the config.")
+	}
+
+	return &config
 }

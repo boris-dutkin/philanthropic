@@ -6,22 +6,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/boris-dutkin/philanthropic/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-var DB *gorm.DB
-
-func Connect() {
-	env := viper.Get("env")
-	host := viper.Get(fmt.Sprintf("%s.db.host", env))
-	port := viper.Get(fmt.Sprintf("%s.db.port", env))
-	user := viper.Get(fmt.Sprintf("%s.db.user", env))
-	password := viper.Get(fmt.Sprintf("%s.db.password", env))
-	database := viper.Get(fmt.Sprintf("%s.db.name", env))
-
+func Connect(config *config.Config) *gorm.DB {
 	logger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -33,15 +24,15 @@ func Connect() {
 		},
 	)
 
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
-		user,
-		password,
-		database,
-		host,
-		port,
+	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
+		config.DB.User,
+		config.DB.Password,
+		config.DB.Name,
+		config.DB.Host,
+		config.DB.Port,
 	)
 
-	connection, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger,
 	})
 
@@ -49,7 +40,7 @@ func Connect() {
 		panic("Failed to connect to the database.")
 	}
 
-	DB = connection
+	Migrate(db)
 
-	Migrate()
+	return db
 }

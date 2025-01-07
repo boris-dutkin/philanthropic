@@ -1,8 +1,8 @@
 dev:
-	ENV=dev go run server.go
+	ENV=dev go run ./cmd/server.go
 
 prod:
-	ENV=dev go run server.go
+	ENV=prod go run ./cmd/server.go
 
 build:
-	go build -o bin server.go
+	go build -o bin ./cmd/server.go

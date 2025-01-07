@@ -1,11 +1,16 @@
 package database
 
-import "github.com/boris-dutkin/philanthropic/models"
+import (
+	"github.com/boris-dutkin/philanthropic/internal/permission"
+	"github.com/boris-dutkin/philanthropic/internal/role"
+	"github.com/boris-dutkin/philanthropic/internal/user"
+	"gorm.io/gorm"
+)
 
-func Migrate() {
-	DB.AutoMigrate(
-		&models.User{},
-		&models.Role{},
-		&models.Permission{},
+func Migrate(db *gorm.DB) {
+	db.AutoMigrate(
+		&user.User{},
+		&role.Role{},
+		&permission.Permission{},
 	)
 }
